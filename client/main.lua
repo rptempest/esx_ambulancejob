@@ -28,19 +28,17 @@ AddEventHandler('esx:setJob', function(job)
 	ESX.PlayerData.job = job
 end)
 
-AddEventHandler('esx:onPlayerSpawn', function()
+RegisterNetEvent('esx_ambulancejob:multicharacter')
+AddEventHandler('esx_ambulancejob:multicharacter', function()
 	isDead = false
-
 	if firstSpawn then
 		firstSpawn = false
-
 		if Config.AntiCombatLog then
 			while not PlayerLoaded do
 				Citizen.Wait(1000)
 			end
-
-			ESX.TriggerServerCallback('esx_ambulancejob:getDeathStatus', function(shouldDie)
-				if shouldDie then
+			ESX.TriggerServerCallback('esx_ambulancejob:getDeathStatus', function(isDead)
+				if isDead and Config.AntiCombatLog then
 					ESX.ShowNotification(_U('combatlog_message'))
 					RemoveItemsAfterRPDeath()
 				end
@@ -311,7 +309,7 @@ function RespawnPed(ped, coords, heading)
 	ClearPedBloodDamage(ped)
 
 	TriggerServerEvent('esx:onPlayerSpawn')
-	TriggerEvent('esx:onPlayerSpawn')
+	TriggerEvent('esx_ambulancejob:multicharacter')
 	TriggerEvent('playerSpawned') -- compatibility with old scripts, will be removed soon
 end
 
